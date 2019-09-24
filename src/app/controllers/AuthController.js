@@ -1,24 +1,29 @@
-const { User } = require('../models');
+const User = require('../models/User');
 
 class AuthController {
-  async store (request, response) {
 
-    const { email, password } = request.body;
+  async signUp (request, response) {
 
-    const user = await User.findOne({ where: { email } });
+    console.log(User);
 
-    if (!user) {
-      return response.status(401).json({ message: 'User not found' });
-    }
+    return response.status(200).json({'message':'oi'});
 
-    if (!(await user.checkPassword(password))) {
-      return response.status(401).json({ message: 'Incorrect password' });
-    }
+    // const { email, password } = request.body;
 
-    return response.status(200).json({
-      user,
-      token: user.generateToken()
-    });
+    // const user = await User.findOne({ where: { email } });
+
+    // if (!user) {
+    //   return response.status(401).json({ message: 'User not found' });
+    // }
+
+    // if (!(await user.checkPassword(password))) {
+    //   return response.status(401).json({ message: 'Incorrect password' });
+    // }
+
+    // return response.status(200).json({
+    //   user,
+    //   token: user.generateToken()
+    // });
   }
 }
 
