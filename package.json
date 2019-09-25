@@ -8,8 +8,9 @@
     "url": "git+https://github.com/ikaromarlon/simple-api.git"
   },
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js --ignore ./tests",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js --ignore ./tests",
+    "lint": "yarn eslint . --fix",
     "test": "NODE_ENV=test jest --detectOpenHandles"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "node-uuid": "^1.4.8"
   },
   "devDependencies": {
+    "eslint": "^6.4.0",
     "factory-girl": "^5.0.4",
     "faker": "^4.1.0",
     "jest": "^24.9.0",

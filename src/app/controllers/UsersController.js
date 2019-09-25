@@ -2,17 +2,6 @@ const User = require('../models/User');
 
 class UsersController {
 
-  async create (request, response) {
-
-    const user = await User.create({
-      name: request.body.name,
-      email: request.body.email,
-      password: request.body.password
-    });
-
-    return response.status(200).json({ user });
-  }
-
   async all (request, response) {
 
     const users = await User.findAll();
