@@ -1,17 +1,18 @@
 const routes = require('express').Router();
-const authMiddleware = require('./app/middlewares/auth');
-const AuthController = require('./app/controllers/AuthController');
-// const UsersController = require('./app/controllers/UsersController');
+const authMiddleware = require('./app/middlewares/authMiddleware');
+const authRequest = require('./app/requests/authRequest');
+const authController = require('./app/controllers/authController');
+const userRequest = require('./app/requests/userRequest');
+const usersController = require('./app/controllers/usersController');
 
-routes.get('/', (req, res) => {
-  return res.status(200).json({ message: 'Api OK!!!!' });
-});
+routes.get('/', (req, res) => res.status(200).json({ message: 'Server running!!!!' }));
 
-routes.post('/signup', AuthController.signUp);
-// routes.post('/signin', AuthController.signIn);
+routes.post('/sign-up', [ authRequest.postSignUp, authController.signUp ]);
+routes.post('/sign-in', [ authRequest.postSignIn, authController.signIn ]);
 
 routes.use(authMiddleware);
 
-// routes.get('/users/:id', UsersController.find);
+routes.get('/users/', usersController.all);
+routes.get('/users/:id', [ userRequest.getFind, usersController.find ]);
 
 module.exports = routes;

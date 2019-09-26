@@ -1,18 +1,18 @@
 const express = require('express');
-const connection = require('./database/connection');
+
 
 class Server {
+
   constructor() {
     this.express = express();
 
     this.middlewares();
     this.routes();
-
-    connection();
   }
 
   middlewares() {
     this.express.use(express.json());
+    this.express.use(express.urlencoded({ extended: true }));
   }
 
   routes() {

@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
-const uuid = require('uuid/v1');
+const uuid = require('uuid');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
-    default: () => uuid(),
-    alias: 'id'
+    required: true,
+    default: uuid.v4
   },
   name: {
     type: String,
@@ -27,20 +27,23 @@ const UserSchema = new mongoose.Schema({
   },
   token: {
     type: String,
+    select: false
   },
   phones: [
     {
+      _id: false,
       areaCode: {
-        type: Number
+        type: String,
+        minlength: 2,
+        maxlength: 2
       },
       number: {
-        type: Number
+        type: String,
+        minlength: 8,
+        maxlength: 9
       },
     }
   ],
-  status: {
-    type: Boolean
-  },
   created_at: {
     type: Date,
     default: Date.now
@@ -49,14 +52,20 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
-});
+}, { versionKey: false });
 
-UserSchema.methods.checkPassword = function(password) {
-  return bcrypt.compare(password, this.password);
+UserSchema.methods.checkPassword = async function(password) {
+  return await bcrypt.compare(password, this.password);
 };
 
-UserSchema.methods.generateToken = function() {
-  return this.token = jwt.sign({ id: this.id }, process.env.APP_KEY);
+UserSchema.methods.generateToken = async function() {
+  return this.token = await jwt.sign({
+    sub: this.id,
+    iss: process.env.APP_NAME,
+    data: {
+      id: this.id
+    }
+  }, 'gJ6JlxgWKj21swOsv7vm5Q', { expiresIn: 60 * 30 });
 };
 
 UserSchema.pre('save', async function(next) {
@@ -71,6 +80,7 @@ UserSchema.pre('save', async function(next) {
 UserSchema.set('toJSON', {
   transform: function(doc, ret) {
     delete ret['password'];
+    delete ret['token'];
 
     return ret;
   }
